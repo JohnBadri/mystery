@@ -396,7 +396,7 @@
     if(v === CODE){ setMsg('Access granted — opening log…', 'ok'); setTimeout(unlock, 420); return; }
     attempts++;
     card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
-    if(attempts >= 3) setMsg('Hint: four shapes on the lockers. Count the sides of each.', 'hint');
+    if(attempts >= 20) setMsg('Hint: What did you find in round 2?', 'hint');
     else              setMsg('Access code not recognised. (' + attempts + ' logged)');
     input.value = ''; input.focus();
   }
