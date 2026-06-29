@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--
   OPERATION: DEAD ON ARRIVAL — ROUND 3
   PIC Internal Systems — Forensic Access & Activity Log
@@ -10,6 +11,8 @@
     - Sesh (MYSORE) is in Server Room B2 14:50-15:35, covering the window -> cleared.
     - No "Security Flags" tab. Teams infer from badge / file / system data.
 -->
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PIC Internal Systems — Access Log RH-L19/0317</title>
@@ -25,6 +28,8 @@
     --plum:#71507a; --brown:#8a5a2a;
     --mono:'IBM Plex Mono','SF Mono',ui-monospace,'Courier New',monospace;
     --sans:'IBM Plex Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --gutter:84px;                         /* timeline label column / axis offset */
+    --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -35,9 +40,13 @@
   }
   .mono{font-family:var(--mono)}
 
+  /* text-colour utilities (replace scattered inline styles) */
+  .t-red{color:var(--red)} .t-ochre{color:var(--ochre)} .t-green{color:var(--green)}
+
   .sheet{
-    background:linear-gradient(0deg,rgba(0,0,0,.015),rgba(0,0,0,.015)),var(--paper);
-    border:1.5px solid var(--rule-bold);box-shadow:0 18px 44px rgba(40,36,28,.32);position:relative;
+    background:var(--grain),linear-gradient(0deg,rgba(0,0,0,.015),rgba(0,0,0,.015)),var(--paper);
+    border:1.5px solid var(--rule-bold);box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 18px 44px rgba(40,36,28,.32);
+    position:relative;
   }
   .sheet::before{content:"";position:absolute;inset:7px;border:1px solid var(--rule);pointer-events:none;z-index:0}
 
@@ -47,7 +56,9 @@
     padding:4px 9px;transform:rotate(-3deg);opacity:.82;box-shadow:inset 0 0 0 1px rgba(156,59,47,.25);
   }
 
-  /* GATE */
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+  /* ── GATE ───────────────────────────────────────────── */
   #gate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:22px;
     background:radial-gradient(140% 120% at 50% 0%,#d6d0c1,#bcb6a4 75%)}
   .gate-card{width:100%;max-width:460px}
@@ -71,19 +82,20 @@
   #enter:active{transform:translateY(1px)}
   .gate-msg{min-height:18px;margin-top:13px;font-family:var(--mono);font-size:11.5px;color:var(--red);letter-spacing:.02em}
   .gate-msg.hint{color:var(--ink-faint)}
+  .gate-msg.ok{color:var(--green)}
   .gate-foot{border-top:1px solid var(--rule);margin:16px -26px -22px;padding:10px 26px;font-family:var(--mono);
     font-size:9.5px;letter-spacing:.1em;color:var(--ink-faint);display:flex;justify-content:space-between}
   .shake{animation:shake .4s}
   @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 
-  /* CONSOLE */
+  /* ── CONSOLE ────────────────────────────────────────── */
   #console{display:none;max-width:1080px;margin:0 auto;padding:0}
   #console.live{display:block;animation:rise .45s ease both}
   @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .inner{position:relative;z-index:1;padding:0 20px 20px}
 
   header.bar{position:sticky;top:0;z-index:20;margin:0 -20px 0;background:var(--ink);color:var(--paper);
-    padding:11px 18px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+    padding:11px 18px;display:flex;align-items:center;gap:13px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(40,36,28,.25)}
   .brand b{font-size:13px;letter-spacing:.02em}
   .brand span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:#c9c2b0;text-transform:uppercase}
   .bar .sp{flex:1}
@@ -93,6 +105,7 @@
     padding:9px 2px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
   .casebar{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);margin:12px 0 20px;background:var(--paper-2)}
+  @media(max-width:620px){.casebar{grid-template-columns:repeat(2,1fr)}.casebar div:nth-child(2){border-right:0}}
   .casebar div{padding:10px 13px;border-right:1px solid var(--rule)}
   .casebar div:last-child{border-right:0}
   .casebar k{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:3px}
@@ -115,16 +128,18 @@
   .tod .kv k{font-family:var(--mono);color:var(--ink-faint);font-size:10.5px}
   .tod .kv span{font-family:var(--mono);color:var(--ink-2)}
 
+  /* ── timeline ── */
   .timeline{padding:14px 16px 18px}
   .tl-title{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:12px}
   .tl-scroll{overflow-x:auto;padding-bottom:4px}
   .tl-inner{min-width:560px}
-  .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-bottom:8px;padding-left:84px}
-  .lane{display:grid;grid-template-columns:84px 1fr;align-items:center;margin-bottom:8px}
+  .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-bottom:8px;padding-left:var(--gutter)}
+  .lanes{position:relative;padding-top:12px}
+  .lane{display:grid;grid-template-columns:var(--gutter) 1fr;align-items:center;margin-bottom:8px}
   .lane .who{font-family:var(--mono);font-size:11px;color:var(--ink-dim);white-space:nowrap}
   .lane .who b{color:var(--ink)}
   .track{position:relative;height:20px;border:1px solid var(--rule);background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
-  .band{position:absolute;top:1px;height:16px;display:flex;align-items:center;padding:0 6px;overflow:hidden}
+  .band{position:absolute;top:1px;height:16px;display:flex;align-items:center;padding:0 6px;overflow:hidden;border-radius:1px}
   .band small{font-family:var(--mono);font-size:9px;letter-spacing:.03em;white-space:nowrap;color:var(--ink-2)}
   .b-floor{background:rgba(63,98,128,.16);border:1px solid rgba(63,98,128,.5)}
   .b-server{background:rgba(91,122,69,.20);border:1px solid rgba(91,122,69,.6)}
@@ -133,8 +148,12 @@
   .b-off small{color:var(--ink-faint)}
   .b-dead{background:rgba(156,59,47,.15);border:1px solid rgba(156,59,47,.45)}
   .b-dead small{color:var(--red)}
-  .death-stripe{position:absolute;top:-4px;bottom:-4px;background:repeating-linear-gradient(45deg,rgba(156,59,47,.16) 0 4px,transparent 4px 8px);border-left:1.5px solid var(--red);border-right:1.5px solid var(--red);z-index:3;pointer-events:none}
-  .death-stripe::after{content:"T.O.D";position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--red)}
+  /* one continuous time-of-death band drawn across every lane */
+  .tod-band{position:absolute;top:12px;bottom:6px;z-index:5;pointer-events:none;
+    background:repeating-linear-gradient(45deg,rgba(156,59,47,.16) 0 4px,transparent 4px 8px);
+    border-left:1.5px solid var(--red);border-right:1.5px solid var(--red)}
+  .tod-band::before{content:"T.O.D 15:00–15:30";position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+    white-space:nowrap;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--red)}
   .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--ink-dim)}
   .legend i{display:inline-block;width:13px;height:10px;margin-right:5px;vertical-align:middle;border:1px solid var(--rule)}
   .li-floor{background:rgba(63,98,128,.4)}
@@ -142,6 +161,7 @@
   .li-off{background:repeating-linear-gradient(45deg,rgba(120,112,95,.5) 0 3px,transparent 3px 6px)}
   .li-dead{background:repeating-linear-gradient(45deg,rgba(156,59,47,.5) 0 3px,transparent 3px 6px)}
 
+  /* ── tabs ── */
   nav.tabs{display:flex;border:1px solid var(--rule);border-bottom:0;flex-wrap:wrap;background:var(--paper-3)}
   nav.tabs button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);
     background:transparent;border:0;border-right:1px solid var(--rule);border-bottom:2px solid transparent;
@@ -172,7 +192,8 @@
   tr.win td{background:rgba(156,59,47,.08)}
   tr.win td.time{color:var(--red)}
   tr.flagrow td{background:rgba(169,128,42,.08)}
-  .chip{font-size:9px;letter-spacing:.07em;padding:2px 6px;border:1px solid var(--rule);color:var(--ink-dim);background:var(--paper-2);text-transform:uppercase}
+  .chip{display:inline-block;font-size:9px;letter-spacing:.07em;padding:2px 7px;border:1px solid var(--rule);border-radius:3px;
+    color:var(--ink-dim);background:var(--paper-2);text-transform:uppercase;font-weight:600}
   .chip.amber{color:var(--ochre);border-color:rgba(169,128,42,.45);background:rgba(169,128,42,.08)}
   .chip.red{color:var(--red);border-color:rgba(156,59,47,.45);background:rgba(156,59,47,.08)}
   .chip.green{color:var(--green);border-color:rgba(91,122,69,.5);background:rgba(91,122,69,.1)}
@@ -200,6 +221,8 @@
   .finprint{margin-top:14px;text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);letter-spacing:.04em;line-height:1.8;padding-bottom:4px}
   @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
+</head>
+<body>
 
 <!-- GATE -->
 <div id="gate">
@@ -240,7 +263,7 @@
       <div><k>Case Ref</k><b class="v">RH-L19 / 0317</b></div>
       <div><k>Subject</k><b>Bullock, George</b></div>
       <div><k>Location</k><b>Level 19 · North Wing</b></div>
-      <div><k>Status</k><b class="v" style="color:var(--red)">DECEASED</b></div>
+      <div><k>Status</k><b class="v t-red">DECEASED</b></div>
     </div>
 
     <section class="forensic">
@@ -264,7 +287,7 @@
           <div class="tl-scroll">
             <div class="tl-inner">
               <div class="axis" id="axis"></div>
-              <div id="lanes"></div>
+              <div class="lanes" id="lanes"></div>
             </div>
           </div>
           <div class="legend">
@@ -277,14 +300,14 @@
       </div>
     </section>
 
-    <nav class="tabs" id="tabs">
-      <button data-tab="badge" class="on">Badge log <span class="badge">16</span></button>
-      <button data-tab="files">File access <span class="badge">14</span></button>
-      <button data-tab="events">System events <span class="badge">14</span></button>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Log views">
+      <button role="tab" aria-selected="true" data-tab="badge" class="on">Badge log <span class="badge">16</span></button>
+      <button role="tab" aria-selected="false" data-tab="files">File access <span class="badge">14</span></button>
+      <button role="tab" aria-selected="false" data-tab="events">System events <span class="badge">14</span></button>
     </nav>
 
     <div class="panel">
-      <div class="tabwrap on" data-pane="badge">
+      <div class="tabwrap on" data-pane="badge" role="tabpanel">
         <div class="tnote">PHYSICAL ACCESS · door &amp; zone readers · Level 19 + sub-areas. Cross-reference each person's whereabouts against the T.O.D. window (15:00–15:30).</div>
         <div class="tablescroll">
           <table>
@@ -294,7 +317,7 @@
         </div>
       </div>
 
-      <div class="tabwrap" data-pane="files">
+      <div class="tabwrap" data-pane="files" role="tabpanel">
         <div class="tnote">SHARED DRIVE · file open / edit / delete events. EDIT = saved changes written. Compare timestamps against the subject's own activity.</div>
         <div class="tablescroll">
           <table>
@@ -304,7 +327,7 @@
         </div>
       </div>
 
-      <div class="tabwrap" data-pane="events">
+      <div class="tabwrap" data-pane="events" role="tabpanel">
         <div class="tnote">SYSTEM EVENTS · workstation logins, idle/lock state, print &amp; removable-media, mail drafts, server-console sessions.</div>
         <div class="tablescroll">
           <table>
@@ -349,191 +372,195 @@
 (function(){
   "use strict";
 
-  var CODE="3465";
-  var input=document.getElementById('code'),btn=document.getElementById('enter'),
-      msg=document.getElementById('msg'),card=document.getElementById('gateCard'),
-      gate=document.getElementById('gate'),attempts=0;
+  const $ = id => document.getElementById(id);
+
+  /* ── access gate ──────────────────────────────────── */
+  const CODE = "3465";
+  const input = $('code'), btn = $('enter'), msg = $('msg'),
+        card  = $('gateCard'), gate = $('gate');
+  let attempts = 0;
+
+  const setMsg = (text, state) => { msg.textContent = text; msg.className = 'gate-msg' + (state ? ' ' + state : ''); };
 
   function unlock(){
-    gate.style.transition='opacity .45s';gate.style.opacity='0';
-    setTimeout(function(){gate.style.display='none';},450);
-    document.getElementById('console').classList.add('live');render();
+    gate.style.transition = 'opacity .45s';
+    gate.style.opacity = '0';
+    setTimeout(() => { gate.style.display = 'none'; }, 450);
+    $('console').classList.add('live');
+    render();
   }
   function tryCode(){
-    var v=(input.value||'').trim();
-    if(v===CODE){msg.className='gate-msg';msg.style.color='var(--green)';msg.textContent='Access granted — opening log…';setTimeout(unlock,420);return;}
-    attempts++;card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
-    if(attempts>=3){msg.className='gate-msg hint';msg.textContent='Hint: four shapes on the lockers. Count the sides of each.';}
-    else{msg.className='gate-msg';msg.style.color='var(--red)';msg.textContent='Access code not recognised. ('+attempts+' logged)';}
-    input.value='';input.focus();
+    const v = (input.value || '').trim();
+    if(v === CODE){ setMsg('Access granted — opening log…', 'ok'); setTimeout(unlock, 420); return; }
+    attempts++;
+    card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    if(attempts >= 3) setMsg('Hint: four shapes on the lockers. Count the sides of each.', 'hint');
+    else              setMsg('Access code not recognised. (' + attempts + ' logged)');
+    input.value = ''; input.focus();
   }
-  btn.addEventListener('click',tryCode);
-  input.addEventListener('keydown',function(e){if(e.key==='Enter')tryCode();});
-  input.addEventListener('input',function(){input.value=input.value.replace(/[^0-9]/g,'');});
-  window.addEventListener('load',function(){input.focus();});
+  btn.addEventListener('click', tryCode);
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') tryCode(); });
+  input.addEventListener('input', () => { input.value = input.value.replace(/[^0-9]/g, ''); });
+  window.addEventListener('load', () => input.focus());
 
-  /* timeline */
-  var T0=480,SPAN=600;
-  function pct(t){return ((t-T0)/SPAN*100);}
-  function m(h,mn){return h*60+mn;}
+  /* ── shared helpers ───────────────────────────────── */
+  const m        = (h, mn) => h * 60 + mn;                 // wall-clock -> minutes
+  const inWindow = t => t >= '15:00' && t <= '15:30';      // T.O.D. window (HH:MM string compare)
+  const chip     = (kind, label) => kind ? `<span class="chip ${kind}">${label}</span>` : '';
 
-  var lanes=[
+  const WHO = [['BULLOCK','who-gb'],['MYSORE','who-sm'],['GOLFES','who-mg'],['MIRANDA','who-em']];
+  const whoCls = p => (WHO.find(([name]) => p.indexOf(name) > -1) || [, 'muted'])[1];
+
+  const render = () => { renderTimeline(); renderBadge(); renderFiles(); renderEvents(); };
+  const fill   = (id, html) => { $(id).innerHTML = html; };
+
+  /* ── timeline ─────────────────────────────────────── */
+  const T0 = 480, SPAN = 600;                              // 08:00 .. 18:00
+  const pct = t => (t - T0) / SPAN * 100;
+  const GUTTER = '84px';                                   // mirrors --gutter
+
+  const LANES = [
     {who:'BULLOCK G', cls:'who-gb', bands:[
       {a:m(8,2),  b:m(15,0),  type:'floor', lab:'on floor'},
       {a:m(15,0), b:m(17,32), type:'dead',  lab:'no activity'}
     ]},
     {who:'MYSORE S', cls:'who-sm', bands:[
-      {a:m(8,45), b:m(14,50), type:'floor',  lab:'on floor'},
-      {a:m(14,50),b:m(15,35), type:'server', lab:'SERVER ROOM B2'},
-      {a:m(15,35),b:m(17,30), type:'floor',  lab:'on floor'}
+      {a:m(8,45),  b:m(14,50), type:'floor',  lab:'on floor'},
+      {a:m(14,50), b:m(15,35), type:'server', lab:'SERVER ROOM B2'},
+      {a:m(15,35), b:m(17,30), type:'floor',  lab:'on floor'}
     ]},
     {who:'GOLFES M', cls:'who-mg', bands:[
-      {a:m(8,55), b:m(13,10), type:'floor', lab:'on floor'},
-      {a:m(13,10),b:m(13,58), type:'off',   lab:'lunch'},
-      {a:m(13,58),b:m(18,0),  type:'floor', lab:'on floor · NO EXIT'}
+      {a:m(8,55),  b:m(13,10), type:'floor', lab:'on floor'},
+      {a:m(13,10), b:m(13,58), type:'off',   lab:'lunch'},
+      {a:m(13,58), b:m(18,0),  type:'floor', lab:'on floor · NO EXIT'}
     ]},
     {who:'MIRANDA E', cls:'who-em', bands:[
-      {a:m(9,28), b:m(12,30), type:'floor', lab:'on floor'},
-      {a:m(12,30),b:m(13,18), type:'off',   lab:'lunch'},
-      {a:m(13,18),b:m(17,15), type:'floor', lab:'on floor'}
+      {a:m(9,28),  b:m(12,30), type:'floor', lab:'on floor'},
+      {a:m(12,30), b:m(13,18), type:'off',   lab:'lunch'},
+      {a:m(13,18), b:m(17,15), type:'floor', lab:'on floor'}
     ]}
   ];
 
-  function render(){
-    var ax=document.getElementById('axis');ax.innerHTML='';
-    ['08:00','10:00','12:00','14:00','16:00','18:00'].forEach(function(t){var s=document.createElement('span');s.textContent=t;ax.appendChild(s);});
-    var host=document.getElementById('lanes');host.innerHTML='';
-    lanes.forEach(function(L){
-      var lane=document.createElement('div');lane.className='lane';
-      var who=document.createElement('div');who.className='who '+L.cls;who.innerHTML='<b>'+L.who+'</b>';
-      var track=document.createElement('div');track.className='track';
-      L.bands.forEach(function(b){
-        var d=document.createElement('div');d.className='band b-'+b.type;
-        d.style.left=pct(b.a)+'%';d.style.width=(pct(b.b)-pct(b.a))+'%';
-        if(b.lab){d.innerHTML='<small>'+b.lab+'</small>';}
-        track.appendChild(d);
-      });
-      var ds=document.createElement('div');ds.className='death-stripe';
-      ds.style.left=pct(m(15,0))+'%';ds.style.width=(pct(m(15,30))-pct(m(15,0)))+'%';
-      track.appendChild(ds);
-      lane.appendChild(who);lane.appendChild(track);host.appendChild(lane);
-    });
-    buildBadge();buildFiles();buildEvents();
+  function renderTimeline(){
+    fill('axis', ['08:00','10:00','12:00','14:00','16:00','18:00'].map(t => `<span>${t}</span>`).join(''));
+
+    const lanes = LANES.map(L => {
+      const bands = L.bands.map(b =>
+        `<div class="band b-${b.type}" style="left:${pct(b.a)}%;width:${pct(b.b) - pct(b.a)}%">` +
+        (b.lab ? `<small>${b.lab}</small>` : '') + `</div>`
+      ).join('');
+      return `<div class="lane"><div class="who ${L.cls}"><b>${L.who}</b></div>` +
+             `<div class="track">${bands}</div></div>`;
+    }).join('');
+
+    // one continuous T.O.D. band across all lanes (offset past the label gutter)
+    const s = pct(m(15,0)) / 100, e = pct(m(15,30)) / 100;
+    const todBand = `<div class="tod-band" style="left:calc(${GUTTER} + (100% - ${GUTTER}) * ${s});` +
+                    `width:calc((100% - ${GUTTER}) * ${e - s})"></div>`;
+
+    fill('lanes', lanes + todBand);
   }
 
-  function whoCls(p){
-    if(p.indexOf('BULLOCK')>-1)return 'who-gb';
-    if(p.indexOf('MYSORE')>-1)return 'who-sm';
-    if(p.indexOf('GOLFES')>-1)return 'who-mg';
-    if(p.indexOf('MIRANDA')>-1)return 'who-em';
-    return 'muted';
-  }
-  function inWindow(t){return t>='15:00' && t<='15:30';}
+  /* ── generic table renderer ───────────────────────── */
+  const renderRows = (id, rows, rowFn) => fill(id, rows.map(rowFn).join(''));
 
-  /* BADGE — Mel & Ella both present through the window; Sesh in Server Room B2 14:50-15:35 */
-  var badge=[
-    ['06:38','FM-0091','NGUYEN T','L19 Main Entry','IN',''],
-    ['07:25','FM-0091','NGUYEN T','L19 Main Entry','OUT',''],
-    ['08:02','GB-4471','BULLOCK G','L19 Main Entry','IN',''],
-    ['08:45','SM-2298','MYSORE S','L19 Main Entry','IN',''],
-    ['08:55','MG-3052','GOLFES M','L19 Main Entry','IN',''],
-    ['09:28','EM-6610','MIRANDA E','L19 Main Entry','IN',''],
-    ['12:30','EM-6610','MIRANDA E','L19 Main Entry','OUT',''],
-    ['13:10','MG-3052','GOLFES M','L19 Main Entry','OUT',''],
-    ['13:18','EM-6610','MIRANDA E','L19 Main Entry','IN',''],
-    ['13:58','MG-3052','GOLFES M','L19 Main Entry','IN',''],
-    ['14:50','SM-2298','MYSORE S','Server Room B2','IN','green'],
-    ['15:35','SM-2298','MYSORE S','Server Room B2','OUT','green'],
-    ['17:15','EM-6610','MIRANDA E','L19 Main Entry','OUT',''],
-    ['17:30','SM-2298','MYSORE S','L19 Main Entry','OUT',''],
+  /* BADGE — Mel & Ella both present through the window; Sesh in Server Room B2 14:50-15:35.
+     The two "NO EXIT RECORDED" entries close the log (subject deceased / Golfes still in). */
+  const BADGE = [
+    ['06:38','FM-0091','NGUYEN T',  'L19 Main Entry','IN',  ''],
+    ['07:25','FM-0091','NGUYEN T',  'L19 Main Entry','OUT', ''],
+    ['08:02','GB-4471','BULLOCK G', 'L19 Main Entry','IN',  ''],
+    ['08:45','SM-2298','MYSORE S',  'L19 Main Entry','IN',  ''],
+    ['08:55','MG-3052','GOLFES M',  'L19 Main Entry','IN',  ''],
+    ['09:28','EM-6610','MIRANDA E', 'L19 Main Entry','IN',  ''],
+    ['12:30','EM-6610','MIRANDA E', 'L19 Main Entry','OUT', ''],
+    ['13:10','MG-3052','GOLFES M',  'L19 Main Entry','OUT', ''],
+    ['13:18','EM-6610','MIRANDA E', 'L19 Main Entry','IN',  ''],
+    ['13:58','MG-3052','GOLFES M',  'L19 Main Entry','IN',  ''],
+    ['14:50','SM-2298','MYSORE S',  'Server Room B2','IN',  'server'],
+    ['15:35','SM-2298','MYSORE S',  'Server Room B2','OUT', 'server'],
+    ['17:15','EM-6610','MIRANDA E', 'L19 Main Entry','OUT', ''],
+    ['17:30','SM-2298','MYSORE S',  'L19 Main Entry','OUT', ''],
+    ['—',    'GB-4471','BULLOCK G', 'L19 Main Entry','NO EXIT RECORDED','deceased'],
+    ['—',    'MG-3052','GOLFES M',  'L19 Main Entry','NO EXIT RECORDED','open']
   ];
-  function buildBadge(){
-    var tb=document.getElementById('badgeBody');tb.innerHTML='';
-    badge.forEach(function(r){
-      var tr=document.createElement('tr');
-      if(inWindow(r[0]))tr.className='win';
-      var chip=r[5]==='green'?'<span class="chip green">server rm</span>':'';
-      tr.innerHTML='<td class="time">'+r[0]+'</td><td class="muted">'+r[1]+'</td>'+
-                   '<td class="'+whoCls(r[2])+'">'+r[2]+'</td><td>'+r[3]+'</td>'+
-                   '<td class="muted">'+r[4]+'</td><td>'+chip+'</td>';
-      tb.appendChild(tr);
-    });
-    ['<td class="muted">—</td><td class="muted">GB-4471</td><td class="who-gb">BULLOCK G</td><td>L19 Main Entry</td><td style="color:var(--red)">NO EXIT RECORDED</td><td><span class="chip red">deceased</span></td>',
-     '<td class="muted">—</td><td class="muted">MG-3052</td><td class="who-mg">GOLFES M</td><td>L19 Main Entry</td><td style="color:var(--ochre)">NO EXIT RECORDED</td><td><span class="chip amber">open</span></td>'
-    ].forEach(function(h){var tr=document.createElement('tr');tr.innerHTML=h;tb.appendChild(tr);});
-  }
+  const renderBadge = () => renderRows('badgeBody', BADGE, ([time, id, person, zone, event, flag]) => {
+    const win = inWindow(time) ? ' class="win"' : '';
+    let eventCell = `<td class="muted">${event}</td>`, badgeChip = '';
+    if(flag === 'server')        badgeChip = chip('green', 'server rm');
+    else if(flag === 'deceased'){ eventCell = `<td class="t-red">${event}</td>`;   badgeChip = chip('red', 'deceased'); }
+    else if(flag === 'open')    { eventCell = `<td class="t-ochre">${event}</td>`; badgeChip = chip('amber', 'open'); }
+    return `<tr${win}><td class="time">${time}</td><td class="muted">${id}</td>` +
+           `<td class="${whoCls(person)}">${person}</td><td>${zone}</td>${eventCell}<td>${badgeChip}</td></tr>`;
+  });
 
   /* FILES */
-  var files=[
-    ['09:10','MYSORE S','/INFRA/SRV-MAINT-LOG.xlsx','OPEN',''],
-    ['09:15','BULLOCK G','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
-    ['09:45','BULLOCK G','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
-    ['10:22','GOLFES M','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
-    ['10:45','GOLFES M','/REPORTS/Q3-FINAL.xlsx','EDIT','amber'],
-    ['11:30','MIRANDA E','/REPORTS/Q3-FINAL.xlsx','OPEN (read-only)',''],
-    ['13:45','GOLFES M','/REPORTS/Q3-FINAL.xlsx','EDIT','amber'],
-    ['14:30','BULLOCK G','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
-    ['14:38','BULLOCK G','/REPORTS/Q3-FINAL_v-PRIOR.xlsx','OPEN (version compare)','cyan'],
-    ['14:41','BULLOCK G','/HR/COMPLAINTS-PROCEDURE.pdf','OPEN','cyan'],
-    ['14:47','BULLOCK G','/HR/MISCONDUCT-REPORT-TMPL.docx','OPEN','cyan'],
-    ['14:55','MIRANDA E','/HR/STAFF-CONCERNS.docx','OPEN (L3 restricted)','red'],
-    ['15:41','GOLFES M','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
-    ['15:44','GOLFES M','/REPORTS/Q3-WORKING-COPY.xlsx','DELETE','amber'],
+  const FILE_CHIP = {red:['red','restricted'], amber:['amber','altered'], cyan:['cyan','subject']};
+  const FILES = [
+    ['09:10','MYSORE S', '/INFRA/SRV-MAINT-LOG.xlsx',        'OPEN',                   ''],
+    ['09:15','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
+    ['09:45','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
+    ['10:22','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
+    ['10:45','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'EDIT',                   'amber'],
+    ['11:30','MIRANDA E','/REPORTS/Q3-FINAL.xlsx',           'OPEN (read-only)',       ''],
+    ['13:45','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'EDIT',                   'amber'],
+    ['14:30','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
+    ['14:38','BULLOCK G','/REPORTS/Q3-FINAL_v-PRIOR.xlsx',   'OPEN (version compare)', 'cyan'],
+    ['14:41','BULLOCK G','/HR/COMPLAINTS-PROCEDURE.pdf',     'OPEN',                   'cyan'],
+    ['14:47','BULLOCK G','/HR/MISCONDUCT-REPORT-TMPL.docx',  'OPEN',                   'cyan'],
+    ['14:55','MIRANDA E','/HR/STAFF-CONCERNS.docx',          'OPEN (L3 restricted)',   'red'],
+    ['15:41','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
+    ['15:44','GOLFES M', '/REPORTS/Q3-WORKING-COPY.xlsx',    'DELETE',                 'amber']
   ];
-  function buildFiles(){
-    var tb=document.getElementById('fileBody');tb.innerHTML='';
-    files.forEach(function(r){
-      var tr=document.createElement('tr');
-      if(inWindow(r[0]))tr.className='win';else if(r[4]==='red')tr.className='flagrow';
-      var act=r[3].indexOf('EDIT')>-1?'<span class="edit">'+r[3]+'</span>':
-              r[3].indexOf('DELETE')>-1?'<span style="color:var(--red)">'+r[3]+'</span>':r[3];
-      var chip=r[4]==='red'?'<span class="chip red">restricted</span>':
-               r[4]==='amber'?'<span class="chip amber">altered</span>':
-               r[4]==='cyan'?'<span class="chip cyan">subject</span>':'';
-      tr.innerHTML='<td class="time">'+r[0]+'</td><td class="'+whoCls(r[1])+'">'+r[1]+'</td>'+
-                   '<td>'+r[2]+'</td><td>'+act+'</td><td>'+chip+'</td>';
-      tb.appendChild(tr);
-    });
-  }
+  const renderFiles = () => renderRows('fileBody', FILES, ([time, person, path, action, flag]) => {
+    const cls = inWindow(time) ? ' class="win"' : (flag === 'red' ? ' class="flagrow"' : '');
+    const act = action.indexOf('EDIT')   > -1 ? `<span class="edit">${action}</span>`
+              : action.indexOf('DELETE') > -1 ? `<span class="t-red">${action}</span>`
+              : action;
+    const fileChip = FILE_CHIP[flag] ? chip(...FILE_CHIP[flag]) : '';
+    return `<tr${cls}><td class="time">${time}</td><td class="${whoCls(person)}">${person}</td>` +
+           `<td>${path}</td><td>${act}</td><td>${fileChip}</td></tr>`;
+  });
 
   /* EVENTS */
-  var events=[
-    ['08:03','BULLOCK G','Workstation login','WS-GB · Zone A',''],
-    ['08:46','MYSORE S','Workstation login','WS-SM',''],
-    ['08:56','GOLFES M','Workstation login','WS-MG',''],
-    ['09:29','MIRANDA E','Workstation login','WS-EM',''],
-    ['10:50','GOLFES M','Print job','Q3-FINAL.xlsx · 4pp · MFP-02','amber'],
-    ['13:46','GOLFES M','Print job','Q3-FINAL.xlsx · 4pp · MFP-02 (reprint)','amber'],
-    ['14:48','BULLOCK G','Mail draft saved','To: HR-INTAKE · "Q3 figures — concern" · NOT SENT','cyan'],
-    ['14:52','MYSORE S','Server console session','Rack B2 · maintenance task INC-44192','green'],
-    ['15:02','BULLOCK G','Workstation idle','WS-GB — no input detected','red'],
-    ['15:18','BULLOCK G','Screen auto-lock','WS-GB — idle timeout','red'],
-    ['15:41','GOLFES M','Removable media','USB mass-storage → WS-MG · 312 MB written','amber'],
-    ['16:05','GOLFES M','Workstation logout','WS-MG',''],
-    ['17:32','PATEL R (Sec.)','Welfare check','Level 19 — subject located',''],
-    ['17:35','SYSTEM','Forced lock','WS-GB sealed by IT Security',''],
+  const EVENT_CHIP = {red:['red','anchor'], amber:['amber','review'], green:['green','server rm'], cyan:['cyan','subject']};
+  const EVENTS = [
+    ['08:03','BULLOCK G',     'Workstation login',      'WS-GB · Zone A',                          ''],
+    ['08:46','MYSORE S',      'Workstation login',      'WS-SM',                                   ''],
+    ['08:56','GOLFES M',      'Workstation login',      'WS-MG',                                   ''],
+    ['09:29','MIRANDA E',     'Workstation login',      'WS-EM',                                   ''],
+    ['10:50','GOLFES M',      'Print job',              'Q3-FINAL.xlsx · 4pp · MFP-02',            'amber'],
+    ['13:46','GOLFES M',      'Print job',              'Q3-FINAL.xlsx · 4pp · MFP-02 (reprint)',  'amber'],
+    ['14:48','BULLOCK G',     'Mail draft saved',       'To: HR-INTAKE · "Q3 figures — concern" · NOT SENT', 'cyan'],
+    ['14:52','MYSORE S',      'Server console session', 'Rack B2 · maintenance task INC-44192',    'green'],
+    ['15:02','BULLOCK G',     'Workstation idle',       'WS-GB — no input detected',               'red'],
+    ['15:18','BULLOCK G',     'Screen auto-lock',       'WS-GB — idle timeout',                    'red'],
+    ['15:41','GOLFES M',      'Removable media',        'USB mass-storage → WS-MG · 312 MB written','amber'],
+    ['16:05','GOLFES M',      'Workstation logout',     'WS-MG',                                   ''],
+    ['17:32','PATEL R (Sec.)','Welfare check',          'Level 19 — subject located',              ''],
+    ['17:35','SYSTEM',        'Forced lock',            'WS-GB sealed by IT Security',             '']
   ];
-  function buildEvents(){
-    var tb=document.getElementById('eventBody');tb.innerHTML='';
-    events.forEach(function(r){
-      var tr=document.createElement('tr');
-      if(inWindow(r[0]))tr.className='win';
-      var chip=r[4]==='red'?'<span class="chip red">anchor</span>':
-               r[4]==='amber'?'<span class="chip amber">review</span>':
-               r[4]==='green'?'<span class="chip green">server rm</span>':
-               r[4]==='cyan'?'<span class="chip cyan">subject</span>':'';
-      tr.innerHTML='<td class="time">'+r[0]+'</td><td class="'+whoCls(r[1])+'">'+r[1]+'</td>'+
-                   '<td>'+r[2]+'</td><td class="muted">'+r[3]+'</td><td>'+chip+'</td>';
-      tb.appendChild(tr);
-    });
-  }
+  const renderEvents = () => renderRows('eventBody', EVENTS, ([time, person, event, detail, flag]) => {
+    const win = inWindow(time) ? ' class="win"' : '';
+    const eventChip = EVENT_CHIP[flag] ? chip(...EVENT_CHIP[flag]) : '';
+    return `<tr${win}><td class="time">${time}</td><td class="${whoCls(person)}">${person}</td>` +
+           `<td>${event}</td><td class="muted">${detail}</td><td>${eventChip}</td></tr>`;
+  });
 
-  document.getElementById('tabs').addEventListener('click',function(e){
-    var b=e.target.closest('button');if(!b)return;
-    var t=b.getAttribute('data-tab');
-    this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
-    b.classList.add('on');
-    document.querySelectorAll('.tabwrap').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-pane')===t);});
+  /* ── tab switching ────────────────────────────────── */
+  $('tabs').addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    const target = b.getAttribute('data-tab');
+    b.parentNode.querySelectorAll('button').forEach(x => {
+      const on = x === b;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-selected', on);
+    });
+    document.querySelectorAll('.tabwrap').forEach(p =>
+      p.classList.toggle('on', p.getAttribute('data-pane') === target));
   });
 })();
 </script>
+</body>
+</html>
