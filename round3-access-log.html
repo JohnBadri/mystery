@@ -1,0 +1,539 @@
+<!--
+  OPERATION: DEAD ON ARRIVAL — ROUND 3
+  PIC Internal Systems — Forensic Access & Activity Log
+  Light / drafting style to match FM-L19-014.
+  Access code: 3465  (triangle 3 / square 4 / hexagon 6 / star 5)
+
+  Round 3 logic:
+    - Mel (GOLFES) and Ella (MIRANDA) are BOTH on the floor through the death
+      window (15:00-15:30). Neither is cleared by location.
+    - Sesh (MYSORE) is in Server Room B2 14:50-15:35, covering the window -> cleared.
+    - No "Security Flags" tab. Teams infer from badge / file / system data.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PIC Internal Systems — Access Log RH-L19/0317</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+
+  :root{
+    --mount:#cbc5b6; --paper:#f5f2e9; --paper-2:#ece8db; --paper-3:#e3ddcd;
+    --ink:#23211b; --ink-2:#3c382f; --ink-dim:#6c6657; --ink-faint:#938c7b;
+    --rule:#b7b09e; --rule-bold:#3a362d;
+    --red:#9c3b2f; --green:#5b7a45; --ochre:#a9802a; --blue:#3f6280;
+    --plum:#71507a; --brown:#8a5a2a;
+    --mono:'IBM Plex Mono','SF Mono',ui-monospace,'Courier New',monospace;
+    --sans:'IBM Plex Sans',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(140% 120% at 50% 0%,#d6d0c1,#c2bcab 70%);
+    color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;min-height:100vh;padding:26px 18px 60px;
+  }
+  .mono{font-family:var(--mono)}
+
+  .sheet{
+    background:linear-gradient(0deg,rgba(0,0,0,.015),rgba(0,0,0,.015)),var(--paper);
+    border:1.5px solid var(--rule-bold);box-shadow:0 18px 44px rgba(40,36,28,.32);position:relative;
+  }
+  .sheet::before{content:"";position:absolute;inset:7px;border:1px solid var(--rule);pointer-events:none;z-index:0}
+
+  .stamp{
+    display:inline-block;font-family:var(--mono);font-weight:700;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--red);border:2px solid var(--red);border-radius:3px;
+    padding:4px 9px;transform:rotate(-3deg);opacity:.82;box-shadow:inset 0 0 0 1px rgba(156,59,47,.25);
+  }
+
+  /* GATE */
+  #gate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:22px;
+    background:radial-gradient(140% 120% at 50% 0%,#d6d0c1,#bcb6a4 75%)}
+  .gate-card{width:100%;max-width:460px}
+  .gate-top{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;
+    text-transform:uppercase;padding:9px 14px;display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+  .gate-top .no{margin-left:auto;color:#cfc8b6}
+  .gate-body{padding:26px 26px 22px;position:relative;z-index:1}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.28em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:14px}
+  .gate-body h1{font-weight:700;font-size:21px;margin:0 0 5px;letter-spacing:-.01em}
+  .gate-body p.sub{margin:0 0 18px;color:var(--ink-dim);font-size:13px}
+  .gate-body .stamp{margin-bottom:20px}
+  .code-row{display:flex;gap:9px}
+  #code{flex:1;font-family:var(--mono);font-size:24px;letter-spacing:.4em;text-align:center;color:var(--ink);
+    background:var(--paper-2);border:1px solid var(--rule);border-radius:3px;padding:13px 8px;outline:none;
+    transition:border-color .15s,box-shadow .15s}
+  #code::placeholder{color:var(--ink-faint)}
+  #code:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(63,98,128,.16)}
+  #enter{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+    color:var(--paper);background:var(--ink);border:0;border-radius:3px;padding:0 18px;cursor:pointer;transition:filter .15s,transform .05s}
+  #enter:hover{filter:brightness(1.35)}
+  #enter:active{transform:translateY(1px)}
+  .gate-msg{min-height:18px;margin-top:13px;font-family:var(--mono);font-size:11.5px;color:var(--red);letter-spacing:.02em}
+  .gate-msg.hint{color:var(--ink-faint)}
+  .gate-foot{border-top:1px solid var(--rule);margin:16px -26px -22px;padding:10px 26px;font-family:var(--mono);
+    font-size:9.5px;letter-spacing:.1em;color:var(--ink-faint);display:flex;justify-content:space-between}
+  .shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+
+  /* CONSOLE */
+  #console{display:none;max-width:1080px;margin:0 auto;padding:0}
+  #console.live{display:block;animation:rise .45s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .inner{position:relative;z-index:1;padding:0 20px 20px}
+
+  header.bar{position:sticky;top:0;z-index:20;margin:0 -20px 0;background:var(--ink);color:var(--paper);
+    padding:11px 18px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+  .brand b{font-size:13px;letter-spacing:.02em}
+  .brand span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:#c9c2b0;text-transform:uppercase}
+  .bar .sp{flex:1}
+  .bar .meta{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:#cfc8b6;text-transform:uppercase}
+
+  .topnote{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase;
+    padding:9px 2px 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+  .casebar{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule);margin:12px 0 20px;background:var(--paper-2)}
+  .casebar div{padding:10px 13px;border-right:1px solid var(--rule)}
+  .casebar div:last-child{border-right:0}
+  .casebar k{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:3px}
+  .casebar b{font-weight:600;font-size:13px}
+  .casebar .v{font-family:var(--mono)}
+
+  .forensic{border:1px solid var(--rule-bold);margin-bottom:22px;background:var(--paper)}
+  .fhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--paper-3)}
+  .fhead h2{margin:0;font-size:13.5px;font-weight:600;letter-spacing:.01em}
+  .fhead .src{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-faint)}
+  .fhead .stamp{transform:rotate(-2deg);padding:3px 7px;font-size:9px}
+  .fgrid{display:grid;grid-template-columns:225px 1fr}
+  @media(max-width:760px){.fgrid{grid-template-columns:1fr}}
+  .tod{padding:16px;border-right:1px solid var(--rule)}
+  @media(max-width:760px){.tod{border-right:0;border-bottom:1px solid var(--rule)}}
+  .tod .lab{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase}
+  .tod .big{font-family:var(--mono);font-weight:700;font-size:29px;color:var(--red);margin:4px 0 1px;line-height:1.05}
+  .tod .day{color:var(--ink-dim);font-size:12px;margin-bottom:14px}
+  .tod .kv{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px dashed var(--rule);font-size:12px}
+  .tod .kv k{font-family:var(--mono);color:var(--ink-faint);font-size:10.5px}
+  .tod .kv span{font-family:var(--mono);color:var(--ink-2)}
+
+  .timeline{padding:14px 16px 18px}
+  .tl-title{font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:12px}
+  .tl-scroll{overflow-x:auto;padding-bottom:4px}
+  .tl-inner{min-width:560px}
+  .axis{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-bottom:8px;padding-left:84px}
+  .lane{display:grid;grid-template-columns:84px 1fr;align-items:center;margin-bottom:8px}
+  .lane .who{font-family:var(--mono);font-size:11px;color:var(--ink-dim);white-space:nowrap}
+  .lane .who b{color:var(--ink)}
+  .track{position:relative;height:20px;border:1px solid var(--rule);background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--rule) calc(10% - 1px) 10%)}
+  .band{position:absolute;top:1px;height:16px;display:flex;align-items:center;padding:0 6px;overflow:hidden}
+  .band small{font-family:var(--mono);font-size:9px;letter-spacing:.03em;white-space:nowrap;color:var(--ink-2)}
+  .b-floor{background:rgba(63,98,128,.16);border:1px solid rgba(63,98,128,.5)}
+  .b-server{background:rgba(91,122,69,.20);border:1px solid rgba(91,122,69,.6)}
+  .b-server small{color:#3f5a30}
+  .b-off{background:repeating-linear-gradient(45deg,rgba(120,112,95,.16) 0 5px,transparent 5px 10px);border:1px dashed var(--rule)}
+  .b-off small{color:var(--ink-faint)}
+  .b-dead{background:rgba(156,59,47,.15);border:1px solid rgba(156,59,47,.45)}
+  .b-dead small{color:var(--red)}
+  .death-stripe{position:absolute;top:-4px;bottom:-4px;background:repeating-linear-gradient(45deg,rgba(156,59,47,.16) 0 4px,transparent 4px 8px);border-left:1.5px solid var(--red);border-right:1.5px solid var(--red);z-index:3;pointer-events:none}
+  .death-stripe::after{content:"T.O.D";position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;color:var(--red)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-family:var(--mono);font-size:10px;color:var(--ink-dim)}
+  .legend i{display:inline-block;width:13px;height:10px;margin-right:5px;vertical-align:middle;border:1px solid var(--rule)}
+  .li-floor{background:rgba(63,98,128,.4)}
+  .li-server{background:rgba(91,122,69,.5)}
+  .li-off{background:repeating-linear-gradient(45deg,rgba(120,112,95,.5) 0 3px,transparent 3px 6px)}
+  .li-dead{background:repeating-linear-gradient(45deg,rgba(156,59,47,.5) 0 3px,transparent 3px 6px)}
+
+  nav.tabs{display:flex;border:1px solid var(--rule);border-bottom:0;flex-wrap:wrap;background:var(--paper-3)}
+  nav.tabs button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);
+    background:transparent;border:0;border-right:1px solid var(--rule);border-bottom:2px solid transparent;
+    padding:11px 15px;cursor:pointer;transition:color .15s,background .15s;display:flex;align-items:center;gap:8px}
+  nav.tabs button:hover{color:var(--ink);background:rgba(0,0,0,.02)}
+  nav.tabs button.on{color:var(--ink);background:var(--paper);border-bottom-color:var(--blue)}
+  nav.tabs .badge{font-size:9px;background:var(--paper-2);color:var(--ink-dim);border:1px solid var(--rule);border-radius:2px;padding:1px 6px}
+  nav.tabs button.on .badge{background:rgba(63,98,128,.12);color:var(--blue);border-color:rgba(63,98,128,.3)}
+
+  .panel{border:1px solid var(--rule);border-top:0;background:var(--paper);overflow:hidden}
+  .tabwrap{display:none}
+  .tabwrap.on{display:block}
+  .tnote{padding:9px 15px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);border-bottom:1px solid var(--rule);background:var(--paper-2);letter-spacing:.01em;line-height:1.5}
+
+  .tablescroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-family:var(--mono);font-size:12px}
+  thead th{text-align:left;font-weight:600;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);
+    padding:9px 13px;border-bottom:1px solid var(--rule-bold);background:var(--paper-3);white-space:nowrap;position:sticky;top:0}
+  tbody td{padding:8px 13px;border-bottom:1px solid var(--rule);color:var(--ink-2);white-space:nowrap;vertical-align:top}
+  tbody tr:hover{background:rgba(0,0,0,.022)}
+  td.time{color:var(--blue);font-weight:500}
+  .who-gb{color:var(--ink-dim)}
+  .who-sm{color:var(--green);font-weight:600}
+  .who-mg{color:var(--brown);font-weight:600}
+  .who-em{color:var(--plum);font-weight:600}
+  .muted{color:var(--ink-faint)}
+  .edit{color:var(--ochre);font-weight:600}
+  tr.win td{background:rgba(156,59,47,.08)}
+  tr.win td.time{color:var(--red)}
+  tr.flagrow td{background:rgba(169,128,42,.08)}
+  .chip{font-size:9px;letter-spacing:.07em;padding:2px 6px;border:1px solid var(--rule);color:var(--ink-dim);background:var(--paper-2);text-transform:uppercase}
+  .chip.amber{color:var(--ochre);border-color:rgba(169,128,42,.45);background:rgba(169,128,42,.08)}
+  .chip.red{color:var(--red);border-color:rgba(156,59,47,.45);background:rgba(156,59,47,.08)}
+  .chip.green{color:var(--green);border-color:rgba(91,122,69,.5);background:rgba(91,122,69,.1)}
+  .chip.cyan{color:var(--blue);border-color:rgba(63,98,128,.45);background:rgba(63,98,128,.08)}
+
+  .titleblock{display:grid;grid-template-columns:200px 1fr 250px;border:1px solid var(--rule-bold);margin-top:22px;background:var(--paper)}
+  @media(max-width:680px){.titleblock{grid-template-columns:1fr}}
+  .tb-legend{padding:11px 14px;border-right:1px solid var(--rule);font-size:11px}
+  .tb-legend h5{margin:0 0 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--ink-faint);text-transform:uppercase}
+  .tb-legend .row{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim)}
+  .tb-legend .row i{width:13px;height:10px;border:1px solid var(--rule);display:inline-block}
+  .tb-mid{padding:11px 16px;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+  .tb-mid .org{background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;padding:4px 8px;align-self:flex-start;text-transform:uppercase;margin-bottom:8px}
+  .tb-mid h3{margin:0;font-size:21px;font-weight:700;letter-spacing:.01em}
+  .tb-mid p{margin:2px 0 0;font-size:12px;color:var(--ink-dim)}
+  .tb-mid .asset{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:5px}
+  .tb-grid{display:grid;grid-template-columns:1fr 1fr}
+  .tb-grid div{padding:8px 11px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)}
+  .tb-grid div:nth-child(2n){border-right:0}
+  .tb-grid k{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;color:var(--ink-faint);text-transform:uppercase;margin-bottom:2px}
+  .tb-grid b{font-family:var(--mono);font-size:12px;font-weight:600}
+  .tb-status{grid-column:1/3;border-right:0!important}
+  .tb-status b{color:var(--red)}
+
+  .finprint{margin-top:14px;text-align:center;font-family:var(--mono);font-size:9.5px;color:var(--ink-faint);letter-spacing:.04em;line-height:1.8;padding-bottom:4px}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-card sheet" id="gateCard">
+    <div class="gate-top">PIC // INTERNAL SYSTEMS <span class="no">DOC RH-L19/0317</span></div>
+    <div class="gate-body">
+      <div class="eyebrow">PIC · INTERNAL SYSTEMS</div>
+      <h1>Forensic Access Log</h1>
+      <p class="sub">Case file RH-L19 / 0317. Sealed export. Enter the 4-digit access code to view.</p>
+      <div class="stamp">Restricted — authorised investigators only</div>
+      <div class="code-row">
+        <input id="code" class="mono" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off" aria-label="4 digit access code">
+        <button id="enter">Unlock</button>
+      </div>
+      <div class="gate-msg" id="msg" aria-live="polite"></div>
+      <div class="gate-foot"><span>FM-L19 · 0317</span><span>ATTEMPTS LOGGED</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONSOLE -->
+<div id="console" class="sheet">
+  <div class="inner">
+    <header class="bar">
+      <div class="brand">
+        <div><b>PIC // Internal Systems</b><span>Access &amp; Activity Log</span></div>
+      </div>
+      <div class="sp"></div>
+      <div class="meta">EXPORT 18 MAR 2026 · 08:00</div>
+    </header>
+
+    <div class="topnote">
+      <span>RH-L19 / 0317 · LEVEL 19 NORTH WING</span>
+      <span>UNCONTROLLED WHEN PRINTED</span>
+    </div>
+
+    <div class="casebar">
+      <div><k>Case Ref</k><b class="v">RH-L19 / 0317</b></div>
+      <div><k>Subject</k><b>Bullock, George</b></div>
+      <div><k>Location</k><b>Level 19 · North Wing</b></div>
+      <div><k>Status</k><b class="v" style="color:var(--red)">DECEASED</b></div>
+    </div>
+
+    <section class="forensic">
+      <div class="fhead">
+        <h2>Forensic summary</h2>
+        <span class="stamp">Est. T.O.D.</span>
+        <span class="src">Source: NSW Forensic Medicine · prelim.</span>
+      </div>
+      <div class="fgrid">
+        <div class="tod">
+          <div class="lab">Estimated time of death</div>
+          <div class="big">15:00–15:30</div>
+          <div class="day">Monday 17 March 2026</div>
+          <div class="kv"><k>Discovered</k><span>17:32</span></div>
+          <div class="kv"><k>By</k><span>Security check</span></div>
+          <div class="kv"><k>Found at</k><span>Desk GB · Zone A</span></div>
+          <div class="kv"><k>Window</k><span>30 min</span></div>
+        </div>
+        <div class="timeline">
+          <div class="tl-title">Confirmed presence · Level 19 · 08:00–18:00</div>
+          <div class="tl-scroll">
+            <div class="tl-inner">
+              <div class="axis" id="axis"></div>
+              <div id="lanes"></div>
+            </div>
+          </div>
+          <div class="legend">
+            <span><i class="li-floor"></i>On floor (Main)</span>
+            <span><i class="li-server"></i>Server Room B2</span>
+            <span><i class="li-off"></i>Off floor (lunch / no badge)</span>
+            <span><i class="li-dead"></i>Subject — no activity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="tabs" id="tabs">
+      <button data-tab="badge" class="on">Badge log <span class="badge">16</span></button>
+      <button data-tab="files">File access <span class="badge">14</span></button>
+      <button data-tab="events">System events <span class="badge">14</span></button>
+    </nav>
+
+    <div class="panel">
+      <div class="tabwrap on" data-pane="badge">
+        <div class="tnote">PHYSICAL ACCESS · door &amp; zone readers · Level 19 + sub-areas. Cross-reference each person's whereabouts against the T.O.D. window (15:00–15:30).</div>
+        <div class="tablescroll">
+          <table>
+            <thead><tr><th>Time</th><th>Badge ID</th><th>Person</th><th>Reader / Zone</th><th>Event</th><th></th></tr></thead>
+            <tbody id="badgeBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tabwrap" data-pane="files">
+        <div class="tnote">SHARED DRIVE · file open / edit / delete events. EDIT = saved changes written. Compare timestamps against the subject's own activity.</div>
+        <div class="tablescroll">
+          <table>
+            <thead><tr><th>Time</th><th>Person</th><th>Path</th><th>Action</th><th></th></tr></thead>
+            <tbody id="fileBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tabwrap" data-pane="events">
+        <div class="tnote">SYSTEM EVENTS · workstation logins, idle/lock state, print &amp; removable-media, mail drafts, server-console sessions.</div>
+        <div class="tablescroll">
+          <table>
+            <thead><tr><th>Time</th><th>Person</th><th>Event</th><th>Detail</th><th></th></tr></thead>
+            <tbody id="eventBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="titleblock">
+      <div class="tb-legend">
+        <h5>Legend</h5>
+        <div class="row"><i class="li-floor"></i>On floor</div>
+        <div class="row"><i class="li-server"></i>Server Room B2</div>
+        <div class="row"><i class="li-off"></i>Off floor</div>
+        <div class="row"><i class="li-dead"></i>No activity</div>
+      </div>
+      <div class="tb-mid">
+        <span class="org">PIC Internal Systems</span>
+        <h3>Access &amp; Activity Log</h3>
+        <p>Level 19 — North Wing</p>
+        <span class="asset">Case Ref · RH-L19 / 0317</span>
+      </div>
+      <div class="tb-grid">
+        <div><k>DOC No</k><b>IS-L19-0317</b></div>
+        <div><k>REV</k><b>A</b></div>
+        <div><k>DATE</k><b>18 MAR 2026</b></div>
+        <div><k>SCALE</k><b>N/A</b></div>
+        <div class="tb-status"><k>Status</k><b>RESTRICTED — INTERNAL INVESTIGATION</b></div>
+      </div>
+    </div>
+
+    <div class="finprint">
+      PIC INTERNAL SYSTEMS · UNCONTROLLED WHEN PRINTED · VERIFY AGAINST MASTER<br>
+      Three suspects were on this floor on 17 March. One was somewhere else when it happened. Two were not.
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CODE="3465";
+  var input=document.getElementById('code'),btn=document.getElementById('enter'),
+      msg=document.getElementById('msg'),card=document.getElementById('gateCard'),
+      gate=document.getElementById('gate'),attempts=0;
+
+  function unlock(){
+    gate.style.transition='opacity .45s';gate.style.opacity='0';
+    setTimeout(function(){gate.style.display='none';},450);
+    document.getElementById('console').classList.add('live');render();
+  }
+  function tryCode(){
+    var v=(input.value||'').trim();
+    if(v===CODE){msg.className='gate-msg';msg.style.color='var(--green)';msg.textContent='Access granted — opening log…';setTimeout(unlock,420);return;}
+    attempts++;card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+    if(attempts>=3){msg.className='gate-msg hint';msg.textContent='Hint: four shapes on the lockers. Count the sides of each.';}
+    else{msg.className='gate-msg';msg.style.color='var(--red)';msg.textContent='Access code not recognised. ('+attempts+' logged)';}
+    input.value='';input.focus();
+  }
+  btn.addEventListener('click',tryCode);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')tryCode();});
+  input.addEventListener('input',function(){input.value=input.value.replace(/[^0-9]/g,'');});
+  window.addEventListener('load',function(){input.focus();});
+
+  /* timeline */
+  var T0=480,SPAN=600;
+  function pct(t){return ((t-T0)/SPAN*100);}
+  function m(h,mn){return h*60+mn;}
+
+  var lanes=[
+    {who:'BULLOCK G', cls:'who-gb', bands:[
+      {a:m(8,2),  b:m(15,0),  type:'floor', lab:'on floor'},
+      {a:m(15,0), b:m(17,32), type:'dead',  lab:'no activity'}
+    ]},
+    {who:'MYSORE S', cls:'who-sm', bands:[
+      {a:m(8,45), b:m(14,50), type:'floor',  lab:'on floor'},
+      {a:m(14,50),b:m(15,35), type:'server', lab:'SERVER ROOM B2'},
+      {a:m(15,35),b:m(17,30), type:'floor',  lab:'on floor'}
+    ]},
+    {who:'GOLFES M', cls:'who-mg', bands:[
+      {a:m(8,55), b:m(13,10), type:'floor', lab:'on floor'},
+      {a:m(13,10),b:m(13,58), type:'off',   lab:'lunch'},
+      {a:m(13,58),b:m(18,0),  type:'floor', lab:'on floor · NO EXIT'}
+    ]},
+    {who:'MIRANDA E', cls:'who-em', bands:[
+      {a:m(9,28), b:m(12,30), type:'floor', lab:'on floor'},
+      {a:m(12,30),b:m(13,18), type:'off',   lab:'lunch'},
+      {a:m(13,18),b:m(17,15), type:'floor', lab:'on floor'}
+    ]}
+  ];
+
+  function render(){
+    var ax=document.getElementById('axis');ax.innerHTML='';
+    ['08:00','10:00','12:00','14:00','16:00','18:00'].forEach(function(t){var s=document.createElement('span');s.textContent=t;ax.appendChild(s);});
+    var host=document.getElementById('lanes');host.innerHTML='';
+    lanes.forEach(function(L){
+      var lane=document.createElement('div');lane.className='lane';
+      var who=document.createElement('div');who.className='who '+L.cls;who.innerHTML='<b>'+L.who+'</b>';
+      var track=document.createElement('div');track.className='track';
+      L.bands.forEach(function(b){
+        var d=document.createElement('div');d.className='band b-'+b.type;
+        d.style.left=pct(b.a)+'%';d.style.width=(pct(b.b)-pct(b.a))+'%';
+        if(b.lab){d.innerHTML='<small>'+b.lab+'</small>';}
+        track.appendChild(d);
+      });
+      var ds=document.createElement('div');ds.className='death-stripe';
+      ds.style.left=pct(m(15,0))+'%';ds.style.width=(pct(m(15,30))-pct(m(15,0)))+'%';
+      track.appendChild(ds);
+      lane.appendChild(who);lane.appendChild(track);host.appendChild(lane);
+    });
+    buildBadge();buildFiles();buildEvents();
+  }
+
+  function whoCls(p){
+    if(p.indexOf('BULLOCK')>-1)return 'who-gb';
+    if(p.indexOf('MYSORE')>-1)return 'who-sm';
+    if(p.indexOf('GOLFES')>-1)return 'who-mg';
+    if(p.indexOf('MIRANDA')>-1)return 'who-em';
+    return 'muted';
+  }
+  function inWindow(t){return t>='15:00' && t<='15:30';}
+
+  /* BADGE — Mel & Ella both present through the window; Sesh in Server Room B2 14:50-15:35 */
+  var badge=[
+    ['06:38','FM-0091','NGUYEN T','L19 Main Entry','IN',''],
+    ['07:25','FM-0091','NGUYEN T','L19 Main Entry','OUT',''],
+    ['08:02','GB-4471','BULLOCK G','L19 Main Entry','IN',''],
+    ['08:45','SM-2298','MYSORE S','L19 Main Entry','IN',''],
+    ['08:55','MG-3052','GOLFES M','L19 Main Entry','IN',''],
+    ['09:28','EM-6610','MIRANDA E','L19 Main Entry','IN',''],
+    ['12:30','EM-6610','MIRANDA E','L19 Main Entry','OUT',''],
+    ['13:10','MG-3052','GOLFES M','L19 Main Entry','OUT',''],
+    ['13:18','EM-6610','MIRANDA E','L19 Main Entry','IN',''],
+    ['13:58','MG-3052','GOLFES M','L19 Main Entry','IN',''],
+    ['14:50','SM-2298','MYSORE S','Server Room B2','IN','green'],
+    ['15:35','SM-2298','MYSORE S','Server Room B2','OUT','green'],
+    ['17:15','EM-6610','MIRANDA E','L19 Main Entry','OUT',''],
+    ['17:30','SM-2298','MYSORE S','L19 Main Entry','OUT',''],
+  ];
+  function buildBadge(){
+    var tb=document.getElementById('badgeBody');tb.innerHTML='';
+    badge.forEach(function(r){
+      var tr=document.createElement('tr');
+      if(inWindow(r[0]))tr.className='win';
+      var chip=r[5]==='green'?'<span class="chip green">server rm</span>':'';
+      tr.innerHTML='<td class="time">'+r[0]+'</td><td class="muted">'+r[1]+'</td>'+
+                   '<td class="'+whoCls(r[2])+'">'+r[2]+'</td><td>'+r[3]+'</td>'+
+                   '<td class="muted">'+r[4]+'</td><td>'+chip+'</td>';
+      tb.appendChild(tr);
+    });
+    ['<td class="muted">—</td><td class="muted">GB-4471</td><td class="who-gb">BULLOCK G</td><td>L19 Main Entry</td><td style="color:var(--red)">NO EXIT RECORDED</td><td><span class="chip red">deceased</span></td>',
+     '<td class="muted">—</td><td class="muted">MG-3052</td><td class="who-mg">GOLFES M</td><td>L19 Main Entry</td><td style="color:var(--ochre)">NO EXIT RECORDED</td><td><span class="chip amber">open</span></td>'
+    ].forEach(function(h){var tr=document.createElement('tr');tr.innerHTML=h;tb.appendChild(tr);});
+  }
+
+  /* FILES */
+  var files=[
+    ['09:10','MYSORE S','/INFRA/SRV-MAINT-LOG.xlsx','OPEN',''],
+    ['09:15','BULLOCK G','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
+    ['09:45','BULLOCK G','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
+    ['10:22','GOLFES M','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
+    ['10:45','GOLFES M','/REPORTS/Q3-FINAL.xlsx','EDIT','amber'],
+    ['11:30','MIRANDA E','/REPORTS/Q3-FINAL.xlsx','OPEN (read-only)',''],
+    ['13:45','GOLFES M','/REPORTS/Q3-FINAL.xlsx','EDIT','amber'],
+    ['14:30','BULLOCK G','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
+    ['14:38','BULLOCK G','/REPORTS/Q3-FINAL_v-PRIOR.xlsx','OPEN (version compare)','cyan'],
+    ['14:41','BULLOCK G','/HR/COMPLAINTS-PROCEDURE.pdf','OPEN','cyan'],
+    ['14:47','BULLOCK G','/HR/MISCONDUCT-REPORT-TMPL.docx','OPEN','cyan'],
+    ['14:55','MIRANDA E','/HR/STAFF-CONCERNS.docx','OPEN (L3 restricted)','red'],
+    ['15:41','GOLFES M','/REPORTS/Q3-FINAL.xlsx','OPEN',''],
+    ['15:44','GOLFES M','/REPORTS/Q3-WORKING-COPY.xlsx','DELETE','amber'],
+  ];
+  function buildFiles(){
+    var tb=document.getElementById('fileBody');tb.innerHTML='';
+    files.forEach(function(r){
+      var tr=document.createElement('tr');
+      if(inWindow(r[0]))tr.className='win';else if(r[4]==='red')tr.className='flagrow';
+      var act=r[3].indexOf('EDIT')>-1?'<span class="edit">'+r[3]+'</span>':
+              r[3].indexOf('DELETE')>-1?'<span style="color:var(--red)">'+r[3]+'</span>':r[3];
+      var chip=r[4]==='red'?'<span class="chip red">restricted</span>':
+               r[4]==='amber'?'<span class="chip amber">altered</span>':
+               r[4]==='cyan'?'<span class="chip cyan">subject</span>':'';
+      tr.innerHTML='<td class="time">'+r[0]+'</td><td class="'+whoCls(r[1])+'">'+r[1]+'</td>'+
+                   '<td>'+r[2]+'</td><td>'+act+'</td><td>'+chip+'</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  /* EVENTS */
+  var events=[
+    ['08:03','BULLOCK G','Workstation login','WS-GB · Zone A',''],
+    ['08:46','MYSORE S','Workstation login','WS-SM',''],
+    ['08:56','GOLFES M','Workstation login','WS-MG',''],
+    ['09:29','MIRANDA E','Workstation login','WS-EM',''],
+    ['10:50','GOLFES M','Print job','Q3-FINAL.xlsx · 4pp · MFP-02','amber'],
+    ['13:46','GOLFES M','Print job','Q3-FINAL.xlsx · 4pp · MFP-02 (reprint)','amber'],
+    ['14:48','BULLOCK G','Mail draft saved','To: HR-INTAKE · "Q3 figures — concern" · NOT SENT','cyan'],
+    ['14:52','MYSORE S','Server console session','Rack B2 · maintenance task INC-44192','green'],
+    ['15:02','BULLOCK G','Workstation idle','WS-GB — no input detected','red'],
+    ['15:18','BULLOCK G','Screen auto-lock','WS-GB — idle timeout','red'],
+    ['15:41','GOLFES M','Removable media','USB mass-storage → WS-MG · 312 MB written','amber'],
+    ['16:05','GOLFES M','Workstation logout','WS-MG',''],
+    ['17:32','PATEL R (Sec.)','Welfare check','Level 19 — subject located',''],
+    ['17:35','SYSTEM','Forced lock','WS-GB sealed by IT Security',''],
+  ];
+  function buildEvents(){
+    var tb=document.getElementById('eventBody');tb.innerHTML='';
+    events.forEach(function(r){
+      var tr=document.createElement('tr');
+      if(inWindow(r[0]))tr.className='win';
+      var chip=r[4]==='red'?'<span class="chip red">anchor</span>':
+               r[4]==='amber'?'<span class="chip amber">review</span>':
+               r[4]==='green'?'<span class="chip green">server rm</span>':
+               r[4]==='cyan'?'<span class="chip cyan">subject</span>':'';
+      tr.innerHTML='<td class="time">'+r[0]+'</td><td class="'+whoCls(r[1])+'">'+r[1]+'</td>'+
+                   '<td>'+r[2]+'</td><td class="muted">'+r[3]+'</td><td>'+chip+'</td>';
+      tb.appendChild(tr);
+    });
+  }
+
+  document.getElementById('tabs').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    var t=b.getAttribute('data-tab');
+    this.querySelectorAll('button').forEach(function(x){x.classList.remove('on');});
+    b.classList.add('on');
+    document.querySelectorAll('.tabwrap').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-pane')===t);});
+  });
+})();
+</script>
