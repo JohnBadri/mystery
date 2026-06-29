@@ -187,7 +187,7 @@
   .chip.amber{color:var(--ochre);border-color:rgba(169,128,42,.45);background:rgba(169,128,42,.08)}
   .chip.red{color:var(--red);border-color:rgba(156,59,47,.45);background:rgba(156,59,47,.08)}
   .chip.green{color:var(--green);border-color:rgba(91,122,69,.5);background:rgba(91,122,69,.1)}
-  .chip.cyan{color:var(--blue);border-color:rgba(63,98,128,.45);background:rgba(63,98,128,.08)}
+  .chip.cyan{color:var(--blue);border-color:rgba(63,98,128,.45);background:rgba(63,98,128,.07)}
 
   .titleblock{display:grid;grid-template-columns:200px 1fr 250px;border:1px solid var(--rule-bold);margin-top:22px;background:var(--paper)}
   @media(max-width:680px){.titleblock{grid-template-columns:1fr}}
@@ -293,7 +293,7 @@
     <nav class="tabs" id="tabs" role="tablist" aria-label="Log views">
       <button role="tab" aria-selected="true" data-tab="badge" class="on">Badge log <span class="badge">16</span></button>
       <button role="tab" aria-selected="false" data-tab="files">File access <span class="badge">14</span></button>
-      <button role="tab" aria-selected="false" data-tab="events">System events <span class="badge">14</span></button>
+      <button role="tab" aria-selected="false" data-tab="events">System events <span class="badge">13</span></button>
     </nav>
 
     <div class="panel">
@@ -414,17 +414,17 @@
       {a:m(8,2),  b:m(15,0),  type:'floor', lab:'on floor'},
       {a:m(15,0), b:m(17,32), type:'dead',  lab:'no activity'}
     ]},
-    {who:'UKNOWN 1', cls:'who-sm', bands:[
+    {who:'UNKNOWN 1', cls:'who-sm', bands:[
       {a:m(8,45),  b:m(14,50), type:'floor',  lab:'on floor'},
       {a:m(14,50), b:m(15,35), type:'server', lab:'SERVER ROOM B2'},
       {a:m(15,35), b:m(17,30), type:'floor',  lab:'on floor'}
     ]},
-    {who:'UKNOWN 2', cls:'who-mg', bands:[
+    {who:'UNKNOWN 2', cls:'who-mg', bands:[
       {a:m(8,55),  b:m(13,10), type:'floor', lab:'on floor'},
       {a:m(13,10), b:m(13,58), type:'off',   lab:'lunch'},
       {a:m(13,58), b:m(18,0),  type:'floor', lab:'on floor · NO EXIT'}
     ]},
-    {who:'UKNOWN 3', cls:'who-em', bands:[
+    {who:'UNKNOWN 3', cls:'who-em', bands:[
       {a:m(9,28),  b:m(12,30), type:'floor', lab:'on floor'},
       {a:m(12,30), b:m(13,18), type:'off',   lab:'lunch'},
       {a:m(13,18), b:m(17,15), type:'floor', lab:'on floor'}
@@ -484,23 +484,24 @@
            `<td class="${whoCls(person)}">${person}</td><td>${zone}</td>${eventCell}<td>${badgeChip}</td></tr>`;
   });
 
-  /* FILES */
+  /* FILES — Ella (MIRANDA E) is the report editor (the frame). Melissa (GOLFES M) sends a
+     morning mail to Ella, then after the murder deletes that sent mail + the working copy. */
   const FILE_CHIP = {red:['red','restricted'], amber:['amber','altered'], cyan:['cyan','subject']};
   const FILES = [
-    ['09:10','MYSORE S', '/INFRA/SRV-MAINT-LOG.xlsx',        'OPEN',                   ''],
-    ['09:15','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
-    ['09:45','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
-    ['10:22','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
-    ['10:45','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'EDIT',                   'amber'],
-    ['11:30','MIRANDA E','/REPORTS/Q3-FINAL.xlsx',           'OPEN (read-only)',       ''],
-    ['13:45','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'EDIT',                   'amber'],
-    ['14:30','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
-    ['14:38','BULLOCK G','/REPORTS/Q3-FINAL_v-PRIOR.xlsx',   'OPEN (version compare)', 'cyan'],
-    ['14:41','BULLOCK G','/HR/COMPLAINTS-PROCEDURE.pdf',     'OPEN',                   'cyan'],
-    ['14:47','BULLOCK G','/HR/MISCONDUCT-REPORT-TMPL.docx',  'OPEN',                   'cyan'],
-    ['14:55','MIRANDA E','/HR/STAFF-CONCERNS.docx',          'OPEN (L3 restricted)',   'red'],
-    ['15:41','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',           'OPEN',                   ''],
-    ['15:44','GOLFES M', '/REPORTS/Q3-WORKING-COPY.xlsx',    'DELETE',                 'amber']
+    ['09:10','MYSORE S', '/INFRA/SRV-MAINT-LOG.xlsx',             'OPEN',                   ''],
+    ['09:15','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',                'OPEN',                   ''],
+    ['09:45','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',                'OPEN',                   ''],
+    ['10:18','MIRANDA E','/REPORTS/Q3-FINAL.xlsx',                'OPEN',                   ''],
+    ['11:05','MIRANDA E','/REPORTS/Q3-FINAL.xlsx',                'EDIT',                   'amber'],
+    ['12:40','GOLFES M', '/REPORTS/Q3-FINAL.xlsx',                'OPEN (read-only)',       ''],
+    ['13:45','MIRANDA E','/REPORTS/Q3-FINAL.xlsx',                'EDIT',                   'amber'],
+    ['14:30','BULLOCK G','/REPORTS/Q3-FINAL.xlsx',                'OPEN',                   ''],
+    ['14:38','BULLOCK G','/REPORTS/Q3-FINAL_v-PRIOR.xlsx',        'OPEN (version compare)', 'cyan'],
+    ['14:41','BULLOCK G','/HR/COMPLAINTS-PROCEDURE.pdf',          'OPEN',                   'cyan'],
+    ['14:47','BULLOCK G','/HR/MISCONDUCT-REPORT-TMPL.docx',       'OPEN',                   'cyan'],
+    ['14:55','MIRANDA E','/HR/STAFF-CONCERNS.docx',               'OPEN (L3 restricted)',   'red'],
+    ['15:43','GOLFES M', '/MAIL/Sent/RE-Q3-update [to E.Miranda]','DELETE',                 'amber'],
+    ['15:46','GOLFES M', '/REPORTS/Q3-WORKING-COPY.xlsx',         'DELETE',                 'amber']
   ];
   const renderFiles = () => renderRows('fileBody', FILES, ([time, person, path, action, flag]) => {
     const cls = inWindow(time) ? ' class="win"' : (flag === 'red' ? ' class="flagrow"' : '');
@@ -512,15 +513,14 @@
            `<td>${path}</td><td>${act}</td><td>${fileChip}</td></tr>`;
   });
 
-  /* EVENTS */
+  /* EVENTS — Melissa's 09:38 mail to Ella is the instruction (deleted later in FILES). */
   const EVENT_CHIP = {red:['red','anchor'], amber:['amber','review'], green:['green','server rm'], cyan:['cyan','subject']};
   const EVENTS = [
     ['08:03','BULLOCK G',     'Workstation login',      'WS-GB · Zone A',                          ''],
     ['08:46','MYSORE S',      'Workstation login',      'WS-SM',                                   ''],
     ['08:56','GOLFES M',      'Workstation login',      'WS-MG',                                   ''],
     ['09:29','MIRANDA E',     'Workstation login',      'WS-EM',                                   ''],
-    ['10:50','GOLFES M',      'Print job',              'Q3-FINAL.xlsx · 4pp · MFP-02',            'amber'],
-    ['13:46','GOLFES M',      'Print job',              'Q3-FINAL.xlsx · 4pp · MFP-02 (reprint)',  'amber'],
+    ['09:38','GOLFES M',      'Mail sent',              'To: E. Miranda · "RE: Q3 update" · 1 attachment', 'amber'],
     ['14:48','BULLOCK G',     'Mail draft saved',       'To: HR-INTAKE · "Q3 figures — concern" · NOT SENT', 'cyan'],
     ['14:52','MYSORE S',      'Server console session', 'Rack B2 · maintenance task INC-44192',    'green'],
     ['15:02','BULLOCK G',     'Workstation idle',       'WS-GB — no input detected',               'red'],
